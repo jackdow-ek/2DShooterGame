@@ -4,13 +4,71 @@
 using namespace std;
 
 
+struct shipCell
+{
+	int x;
+	int y;
+
+	char character;
+};
+
+struct enemy
+{
+	int x;
+	int y;
+
+	char character;
+};
+
 const int width = 100;
 const int height = 25;
-
 
 char scene[width][height];
 char keys[256];
 
+shipCell ship[7];
+
+void createEnemy()//
+{
+
+}
+
+void createShip() 
+{
+	int xilkDeger = 2;
+	int yilkDeger = 12;
+	for (int i = 0; i < 7; i++)
+	{
+		if (i < 6)
+		{
+			ship[i].x = xilkDeger;
+			ship[i].y = yilkDeger;
+			ship[i].character = char(219);
+			yilkDeger++;
+			if (i == 2)
+			{
+				xilkDeger++;
+				yilkDeger = 12;
+			}
+		}
+		else
+		{
+			ship[i].x = 4;
+			ship[i].y = 13;
+			ship[i].character = char(205);
+		}
+	}
+}
+void drawShip()
+{
+	for (int i = 0; i < 7; i++)
+	{
+		int x = ship[i].x;
+		int y = ship[i].y;
+
+		scene[x][y] = ship[i].character;
+	}
+}
 void coordinatesXY(int x, int y)
 {
 	COORD coord;
@@ -18,7 +76,6 @@ void coordinatesXY(int x, int y)
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-
 void hideCurssor()
 {
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -29,7 +86,6 @@ void hideCurssor()
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(out, &cursorInfo);
 }
-
 void drawScene()
 {
 	for (int y = 0; y < height; y++)
@@ -41,7 +97,6 @@ void drawScene()
 		cout << endl;
 	}
 }
-
 void clearScene()
 {
 	for (int y = 0; y < height; y++)
@@ -53,8 +108,6 @@ void clearScene()
 		}
 	}
 }
-
-
 void createBorder()
 {
 	for (int y = 0; y < height; y++)
@@ -67,19 +120,36 @@ void createBorder()
 		}
 	}
 }
-
-//function for detecting and saveing pressed key(klavyede basilan tusun bilgilerini diziye atayan fonksiyon)
-void readKey(char keys[])
+void readKey(char keys[])//function for detecting and saving pressed key(klavyede basilan tusun bilgilerini diziye atayan fonksiyon)
 {
 	for (int i = 0; i < 256; i++)
 		keys[i] = (char)(GetAsyncKeyState(i) >> 8);
 }
 
-
 void controls() 
 {
 	readKey(keys);
+	if (keys['W'] != 0 && ship[0].y!=1)
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			ship[i].y--;
+		}
+	}
+	else if (keys['S'] != 0 && ship[2].y != 23)
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			ship[i].y++;
+		}
+	}
+	else if (keys[' '] != 0)//
+	{
+		
+	}
 }
+
+
 
 int main()
 {
@@ -87,16 +157,17 @@ int main()
 	createBorder();
 	scene[5][5] = char(250);
 	drawScene();
+	createShip();
+
 	while (true)
 	{
 		clearScene();
 		createBorder();
 		controls();
 
-
+		drawShip();
 		coordinatesXY(0, 0);
 		
-		//scene[i][j] = char(250);
 		drawScene();
 		Sleep(50);
 	}
